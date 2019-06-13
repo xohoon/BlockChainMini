@@ -32,7 +32,9 @@ public class BlockChainStarter {
 		EC ec = new EC();
 		ec.generate("private.pem", "public.pem");
 		
-		
+		// 파일로 저장한 개인키와 공개키를 다시 프로그램으로 불러온다
+		PrivateKey privateKey = ec.readPrivateKeyFromPemFile("private.pem");
+		PublicKey publicKey = ec.readPublicKeyFromPemFile("public.pem");
 		
 		
 		
