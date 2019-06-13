@@ -48,7 +48,7 @@ public class Block {
 		System.out.println("Mining  variable : " + getNonce());
 		System.out.println("Transaction amount : " + transactionList.size() + "개");
 		for(int i=0; i<transactionList.size(); i++) {
-			System.out.println(transactionList.get(i).getInformation());
+			System.out.println(((Transaction)transactionList.get(i)).getInformation());
 		}
 		System.out.println("Block Hash : " + getBlockHash());
 		System.out.println("-------------------------------------------------");
@@ -57,7 +57,7 @@ public class Block {
 	public String getBlockHash() {
 		String transactionInformations = "";
 		for(int i=0; i<transactionList.size(); i++) {
-			transactionInformations += transactionList.get(i).getInformation();
+			transactionInformations += ((Transaction) transactionList.get(i)).getInformation();
 		}
 		return Util.getHash(nonce + transactionInformations + previousBlockHash);
 	}
