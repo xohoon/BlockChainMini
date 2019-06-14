@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.spec.ECGenParameterSpec;
+import java.util.ArrayList;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -25,20 +26,80 @@ public class BlockChainStarter {
 		 * 
 		 * **/
 		
-		// 바운드시 캐슬의 암호화 라이브러리를 사용하도록 설정
 		Security.addProvider(new BouncyCastleProvider());
+		Wallet wallet1 = new Wallet();
+		wallet1.setFromFile("private1.pem", "public1.pem");
+		Wallet wallet2 = new Wallet();
+		wallet1.setFromFile("private2.pem", "public2.pem");
+		Wallet wallet3 = new Wallet();
+		wallet1.setFromFile("private3.pem", "public3.pem");
 		
-		// 타원 곡선 객체를 생성해 개인키와 공개키를 각각 private.pem, public.pem 으로 저장
-		EC ec = new EC();
-		ec.generate("private.pem", "public.pem");
+		Block block1 = new Block(1, null, 0, new ArrayList());
+		block1.mine();
+		block1.showInformation();
 		
-		// 파일로 저장한 개인키와 공개키를 다시 프로그램으로 불러온다
-		PrivateKey privateKey = ec.readPrivateKeyFromPemFile("private.pem");
-		PublicKey publicKey = ec.readPublicKeyFromPemFile("public.pem");
+		Block block2 = new Block(2, block1.getBlockHash(), 0, new ArrayList());
+		
+		// 지갑1에서 지갑2로 코인을 전송했다는 의미를 가진 트랜잭션 생성
+		Transaction transaction1 = new Transaction(wallet1, wallet2.getPublicKey(), 1.5, "2019-06-14 23:05:19.5");
+		block2.addTransaction(transaction1);
+		
+		// 지갑2에서 지갑3으로 코인을 전송했다는 의미를 가진 트랜잭션 생성
+		Transaction transaction2 = new Transaction(wallet2, wallet3.getPublicKey(), 1.5, "2019-06-15 23:05:19.5");
+		block2.addTransaction(transaction2);
+		
+		block2.mine();
+		block2.showInformation();
+		
+		Block block3 = new Block(3, block2.getBlockHash(), 0, new ArrayList());
+		
+		// 지갑1에서 지갑3으로 코인을 전송했다는 의미를 가진 트랜잭션을 생성
+		Transaction transaction3 = new Transaction(wallet1, wallet3.getPublicKey(), 1.5, "2019-06-16 23:05:19.5");
+		block2.addTransaction(transaction3);
+		// 지갑2에서 지갑3으로 코인을 전송했다는 의미를 가진 트랜잭션을 생성
+		Transaction transaction4 = new Transaction(wallet2, wallet3.getPublicKey(), 1.5, "2019-06-17 23:05:19.5");
+		block2.addTransaction(transaction4);
+		
+		block3.mine();
+		block3.showInformation();
 		
 		
-		
-		
+		/*
+		 * // 바운드시 캐슬의 암호화 라이브러리를 사용하도록 설정 Security.addProvider(new
+		 * BouncyCastleProvider());
+		 * 
+		 * // 타원 곡선 객체를 생성해 개인키와 공개키를 각각 private.pem, public.pem 으로 저장 EC ec = new EC();
+		 * ec.generate("private1.pem", "public1.pem"); ec.generate("private2.pem",
+		 * "public2.pem");
+		 * 
+		 * 
+		 * // 파일로 저장한 개인키와 공개키를 다시 프로그램으로 불러온다 PrivateKey privateKey1 =
+		 * ec.readPrivateKeyFromPemFile("private1.pem"); PublicKey publicKey1 =
+		 * ec.readPublicKeyFromPemFile("public1.pem"); PrivateKey privateKey2 =
+		 * ec.readPrivateKeyFromPemFile("private2.pem"); PublicKey publicKey2 =
+		 * ec.readPublicKeyFromPemFile("public2.pem");
+		 * 
+		 * Signature ecdsa; ecdsa = Signature.getInstance("SHA1withECDSA"); // 개인키 1을
+		 * 이용해 암호화(서명) 합니다. ecdsa.initSign(privateKey1);
+		 * 
+		 * String text = "평문입니다."; System.out.println("평문 정보 : " + text); byte[] baText
+		 * = text.getBytes("UTF-8");
+		 * 
+		 * 
+		 * // 평문 데이터를 암호화하여 서명한 데이터를 출력 ecdsa.update(baText); byte[] baSignature =
+		 * ecdsa.sign(); System.out.println("서명된 값 : 0x" + (new BigInteger(1,
+		 * baSignature).toString(16)).toUpperCase());
+		 * 
+		 * Signature signature; signature = Signature.getInstance("SHA1withECDSA");
+		 * 
+		 * // 검을할 때는 공개키 2를 이용해 복호화를 수행합니다. signature.initVerify(publicKey2);
+		 * signature.update(baText); boolean result = signature.verify(baSignature);
+		 * 
+		 * // 개인키와 매칭되는 공개키가 아니므로 복호화에 실채 System.out.println("신원 검증 : " + result);
+		 */
+	    
+	    
+	    
 		
 		/*
 		 * // 무작위의 개인키와 공개키를 생성하기 위해 키 생성 객체를 정의 KeyPairGenerator kpg;

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -19,8 +18,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.bouncycastle.util.encoders.Base64;
-
-import jdk.nashorn.internal.runtime.regexp.JoniRegExp.Factory;
 
 public class EC {
 	
@@ -70,8 +67,8 @@ public class EC {
 		System.out.println(data);
 		
 		// 불필요한 설명 구문을 제거
-		data = data.replaceAll("-----BEGIN EC PRIVATE KEY-----", "");
-		data = data.replaceAll("-----END EC PRIVATE KEY-----", "");
+		data = data.replaceAll("----------BEGIN EC PUBLIC KEY----------", "");
+		data = data.replaceAll("----------END EC PUBLIC KEY------------", "");
 		
 		// PEM 파일은 Base64로 인코딩 되어있으므로 디코딩해서 읽을 수 있도록 한다
 		byte[] decoded = Base64.decode(data);
@@ -88,11 +85,11 @@ public class EC {
 		
 		String data = readString(publicKeyName);
 		System.out.println("EC 개인키를" + publicKeyName + "로부터 불러왔습니다.");
-		System.out.println(data);
+		System.out.print(data);
 		
 		// 불필요한 설명 구문을 제거합니다.
-		data = data.replaceAll("-----BEGIN EC PUBLIC KEY-----", "");
-		data = data.replaceAll("-----END EC PUBLIC KEY-----", "");
+		data = data.replaceAll("BEGIN EC PUBLIC KEY", "");
+		data = data.replaceAll("END EC PUBLIC KEY", "");
 		
 		// PEM 파일은 Base64로 인코딩 되어있으므로 디코딩해서 읽을 수 있도록 한다
 		byte[] decode = Base64.decode(data);
@@ -114,21 +111,6 @@ public class EC {
 		br.close();
 		
 		return pem;
-		
 	}
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
